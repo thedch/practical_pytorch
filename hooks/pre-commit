@@ -1,0 +1,25 @@
+#!/bin/bash
+
+list_new_or_modified_files()
+{
+    git status --porcelain | awk '{print $2}'
+}
+
+
+clean_notebooks()
+{
+    while read notebook; do
+        # http://timstaley.co.uk/posts/making-git-and-jupyter-notebooks-play-nice/
+        echo "Cleaning the outputs from $notebook..."
+        jq --indent 1 \
+            '
+            (.cells[] | select(has("outputs")) | .outputs) = []
+            | (.cells[] | select(has("execution_count")) | .execution_count) = null
+            | .metadata = {"language_info": {"name":"python", "pygments_lexer": "ipython3"}}
+            | .cells[].metadata = {}
+            ' $notebook | sponge $notebook
+        git add $notebook # re add the now cleaned notebook
+    done
+}
+
+list_new_or_modified_files | grep '.ipynb' | clean_notebooks
