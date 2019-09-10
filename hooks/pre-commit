@@ -22,4 +22,12 @@ clean_notebooks()
     done
 }
 
+one=1
+if [ "$(jupyter notebook list | wc -l)" -ne "$one" ]; then
+    echo "ERROR in .git/hooks/pre-commit"
+    echo "Are you running a Jupyter notebook sever?"
+    echo "Please shut it down before committing!"
+    exit 1
+fi
+
 list_new_or_modified_files | grep '.ipynb' | clean_notebooks
