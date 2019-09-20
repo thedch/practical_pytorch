@@ -11,6 +11,9 @@ class Conv_BN_ReLU(nn.Module):
             nn.ReLU(), # try inplace? Try leaky? Try sub_(-0.5)?
         )
 
+    def forward(self, x):
+        return self.seq(x)
+
 class ConvNet(nn.Module):
     def __init__(self, in_ch:int):
         super().__init__()
@@ -19,4 +22,11 @@ class ConvNet(nn.Module):
             Conv_BN_ReLU(16, 32, 3, stride=2),
             Conv_BN_ReLU(32, 64, 3),
             Conv_BN_ReLU(64, 64, 3, stride=2),
+            Conv_BN_ReLU(64, 128, 3, stride=2),
+            Conv_BN_ReLU(128, 128, 3, stride=2),
+            nn.Flatten(),
+            nn.Linear(4608, 10),
         )
+
+    def forward(self, x):
+        return self.seq(x)
