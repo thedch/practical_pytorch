@@ -1,6 +1,8 @@
 from pathlib import Path
 from PIL import Image
 from torchvision.transforms import ToTensor, Compose, CenterCrop, Lambda
+from fastai import datasets
+
 
 def get_fnames(path):
     fnames = []
@@ -19,7 +21,7 @@ def get_fnames(path):
 
 class ImagenetteDataset:
     def __init__(self, training:bool):
-        basepath = Path('/Users/daniel/.fastai/data/imagenette-160')
+        basepath = datasets.untar_data(datasets.URLs.IMAGENETTE_160)
         if training:
             path = basepath/'train'
         else:
